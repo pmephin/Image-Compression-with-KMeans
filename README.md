@@ -36,7 +36,7 @@ Test Image Used:
 
 ### 2.1 Variance Classification Performance 
 
-Eigenvalue Calassification             |  Amplitude Variation Classification
+Eigenvalue Classification             |  Amplitude Variation Classification
 :-------------------------:|:-------------------------:
 <img src="https://github.com/pmephin/Image-Compression-with-KMeans/assets/134229875/ca33a6bc-ff72-4ab8-bbeb-4df18fa32ad2" width="400" height="300">|<img src="https://github.com/pmephin/Image-Compression-with-KMeans/assets/134229875/b2d68a79-9c4c-4484-9abc-e940fc1666a4" width="400" height="300">
 
