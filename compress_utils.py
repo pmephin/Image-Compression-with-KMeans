@@ -56,9 +56,20 @@ def assign_chunks_to_var(chunk_index,img_slices,Indices):
     return chunks,indices
 
 ## matches the image chunks with its respective indices
+## divides up the image into chunks of 4x4 pixels and assigns a numerical index to each pixel
 def slice_image(image,r=4,c=4):
     
     rows,cols = image.shape[:2]
+    while True:
+        if (rows%r==0 or rows%r>1) :        #making sure there arent any 1x1 chunks
+            break
+        else: r+=1
+
+    while True:
+        if cols%c==0 or cols%c>1 :
+            break
+        else: c+=1
+
     indices=np.arange(0,rows*cols).reshape(rows,cols)
     l=[];m=0;n=0;I=[]
     while n<rows:
@@ -70,9 +81,17 @@ def slice_image(image,r=4,c=4):
         n+=r
     return l,I
 
+##concatenates inhomogenous arrays in a list
+def concat_image_blocks(image_blocks):
+    temp_list=[np.vstack(block) for block in image_blocks]
+    return (np.vstack(temp_list))
 
+##concatenates inhomogenous indice blocks in a list
+def concat_indices(indices):
+    temp_list=[index_blocks.flatten() for index_blocks in indices]
+    return(np.hstack(temp_list))
 ## Function to compress image using k1 and k2 clusters after 
-##     a discriminant(eg: mean eigenvalues in the case of compression using covariance matrix) has been found
+## a discriminator(eg: mean eigenvalues in the case of compression using covariance matrix) has been found
 
 def compress_kmeans(discriminator,img_slices,Indices,k1,k2,image):
     print('Compressing Image...')
@@ -91,10 +110,9 @@ def compress_kmeans(discriminator,img_slices,Indices,k1,k2,image):
     high_chunks,high_indices=assign_chunks_to_var(index_h,img_slices,Indices)
 
     ## stacking the list of chunks and indices row-wise
-    high_chunks=np.vstack(high_chunks)
-    high_chunks=high_chunks.reshape(np.product(high_chunks.shape[:2]),3)
-    low_chunks=np.vstack(low_chunks)
-    low_chunks=low_chunks.reshape(np.product(low_chunks.shape[:2]),3)
+    high_chunks=concat_image_blocks(high_chunks)
+    low_chunks=concat_image_blocks(low_chunks)
+
     
     ##clustering and assigning centroid colors to the cluster
     
@@ -104,8 +122,8 @@ def compress_kmeans(discriminator,img_slices,Indices,k1,k2,image):
     comp_high_chunk=kmh.cluster_centers_[kmh.labels_].astype('uint8')
     
     ##stacking indices
-    low_indices=np.vstack(low_indices).flatten()
-    high_indices=np.vstack(high_indices).flatten()
+    low_indices=concat_indices(low_indices)
+    high_indices=concat_indices(high_indices)
     
     ##reconstructing the image after compression
     new_image=np.zeros(image.shape)
@@ -136,7 +154,7 @@ def compress_var(image,k1=64,k2=256,TV=False):
     img_slices,Indices=slice_image(image)
     gray_img_slices,gray_Indices=slice_image(gray_im)
 
-    ## discriminant can be either total variance using |grad(image)| or average variance within each chunk
+    ## discriminant can be wither total variance using |grad(image)| or average variance withing each chunk
     if TV:
         variances=[]
         for img in gray_img_slices:
