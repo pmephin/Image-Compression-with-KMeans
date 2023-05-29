@@ -1,3 +1,5 @@
+## RUN THIS FOR A COMPARATIVE STUDY
+
 from compress_utils import *
 import pandas as pd
 
