@@ -136,7 +136,7 @@ def compress_var(image,k1=64,k2=256,TV=False):
     img_slices,Indices=slice_image(image)
     gray_img_slices,gray_Indices=slice_image(gray_im)
 
-    ## discriminant can be wither total variance using |grad(image)| or average variance withing each chunk
+    ## discriminant can be either total variance using |grad(image)| or average variance within each chunk
     if TV:
         variances=[]
         for img in gray_img_slices:
