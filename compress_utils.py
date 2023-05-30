@@ -60,15 +60,11 @@ def assign_chunks_to_var(chunk_index,img_slices,Indices):
 def slice_image(image,r=4,c=4):
     
     rows,cols = image.shape[:2]
-    while True:
-        if (rows%r==0 or rows%r>1) :        #making sure there arent any 1x1 chunks
-            break
-        else: r+=1
+    while rows % r == 1:
+        r += 1                    #making sure there arent any 1x1 chunks
 
-    while True:
-        if cols%c==0 or cols%c>1 :
-            break
-        else: c+=1
+    while cols % c == 1:
+        c += 1
 
     indices=np.arange(0,rows*cols).reshape(rows,cols)
     l=[];m=0;n=0;I=[]
